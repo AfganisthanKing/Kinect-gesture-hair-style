@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DressingRoom.unity
     guid: 80495b6d53b71634c8b0679209b3c4f8
+  - enabled: 1
+    path: Assets/Scenes/GesturePhotoBooth.unity
+    guid: f4e1d16ff35b0fc49b7b2048f5519f69
   m_configObjects: {}

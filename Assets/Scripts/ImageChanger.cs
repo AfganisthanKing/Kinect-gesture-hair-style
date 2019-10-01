@@ -14,16 +14,17 @@ public class ImageChanger : MonoBehaviour
     public bool HairstleOption = false;
     public string SaveFolder;
     public bool Takescreenshot = false;
-    public float Sect = 1;
     private float _stimer;
     public GameObject[] Counterimages;
     public int countercont = 0;
-    public Texture2D FrameTexture;
+    public GameObject FrameTexture;
+    private AudioSource Audio;
     // Start is called before the first frame update
     void Start()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
         GestureListener = CubeGestureListener.Instance;
+        Audio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -59,25 +60,7 @@ public class ImageChanger : MonoBehaviour
         }
         if (Takescreenshot)
         {
-            Texture2D SH = ScreenCapture.CaptureScreenshotAsTexture();
-            int startX = 0;
-            int startY = SH.height - FrameTexture.height;   
-
-            for (int x = startX; x < SH.width; x++)
-            {
-
-                for (int y = startY; y < SH.height; y++)
-                {
-                    Color bgColor = SH.GetPixel(x, y);
-                    Color wmColor = FrameTexture.GetPixel(x - 1100, y + startY + 10);
-                    Color _wmcolor = FrameTexture.GetPixel(x, y + startY);
-
-                    Color final_color = Color.Lerp(bgColor, wmColor, wmColor.a);
-                    final_color = Color.Lerp(final_color, _wmcolor, _wmcolor.a);
-                    SH.SetPixel(x, y, final_color);
-                }
-            }
-            
+            Texture2D SH = ScreenCapture.CaptureScreenshotAsTexture();            
             SH.Apply();
             byte[] btScreenShot = SH.EncodeToJPG();
             Destroy(SH);
@@ -89,18 +72,11 @@ public class ImageChanger : MonoBehaviour
 
             string sFileName = sDirName + "/" + string.Format("{0:F0}", Time.realtimeSinceStartup * 10f) + ".jpg";
             File.WriteAllBytes(sFileName, btScreenShot);
+            Audio.Play();
             Takescreenshot = false;
+            FrameTexture.SetActive(false);
         }
-        //if (Takescreenshot)
-        //{
-        //    if (Time.time > _stimer)
-        //    {
-        //        _stimer = Time.time + Sect;
-        //        Debug.Log("img sec");
-        //        i++;
-        //        Counterimages[i].SetActive(true);
-        //    }
-        //}
+       
     }
     void OnTriggerEnter(Collider other)
     {
@@ -136,7 +112,7 @@ public class ImageChanger : MonoBehaviour
     }
     public IEnumerator TakeScreenShot()
     {
-
+        FrameTexture.SetActive(true);
         for (int i = 0; i < Counterimages.Length; i++)
         {
             if (Counterimages[i])
